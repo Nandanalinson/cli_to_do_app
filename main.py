@@ -1,40 +1,49 @@
 import typer
 import sqlite3
+from rich.table import Table
+from rich.console import Console
 
 app = typer.Typer()
 
 
-items = []
-
 @app.command()
-def to_do_list(item: str):
-    print(f"item added : {item}")
+def show():
     connect = sqlite3.connect('todo.db')
     cursor = connect.cursor()
-    cursor.execute('CREATE TABLE IF NOT EXISTS todo_items (item TEXT)')
-    cursor.execute('INSERT INTO todo_items (item) VALUES (?)', (item,))
-    cursor.execute('SELECT * FROM todo_items')
-    todo = cursor.fetchall()
+    cursor.execute('CREATE TABLE IF NOT EXISTS todo_items (item TEXT, status TEXT)')
+    cursor.execute('SELECT item, status FROM todo_items')
+    rows = cursor.fetchall()
+    connect.close()
+
+    table = Table(title="To-Do List")
+    table.add_column("Item", style="cyan", no_wrap=True)
+    table.add_column("Status", style="magenta")
+    for item, status in rows:
+        table.add_row(item, status)
+    console = Console()
+    console.print(table)
+    return ""
+    
+@app.command()
+def add(item: str):
+    connect = sqlite3.connect('todo.db')
+    cursor = connect.cursor()
+    cursor.execute('CREATE TABLE IF NOT EXISTS todo_items (item TEXT, status TEXT)')
+    cursor.execute('INSERT INTO todo_items (item, status) VALUES (?, ?)', (item, 'pending'))
     connect.commit()
     connect.close()
-    items.append(item)
-    print(f"Current to-do list: {todo} ")
+    print(f"{show()} ")
 
 
 @app.command()
-def done_list(item : str):
+def c(item : str):
     connect = sqlite3.connect('todo.db')
     cursor = connect.cursor()
-    cursor.execute('DELETE FROM todo_items WHERE item = ?', (item,))
-    if cursor.rowcount == 0:
-        print(f"Item '{item}' not found in the to-do list.")
-    else:
-        print(f"item removed : {item}")
+    cursor.execute('UPDATE todo_items SET status = "completed" WHERE item = ?', (item,))
     connect.commit()
-    cursor.execute('SELECT * FROM todo_items')
-    todo = cursor.fetchall()
     connect.close()
-    print(f"Current to-do list: {todo}")
+    print(f"{show()} ")
+   
 
 
 if __name__ == "__main__":
