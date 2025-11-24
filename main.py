@@ -25,18 +25,25 @@ def show():
     return ""
     
 @app.command()
-def add(item: str):
+def add(task: list[str] = typer.Argument(...)):
+    item = " ".join(task)
     connect = sqlite3.connect('todo.db')
     cursor = connect.cursor()
     cursor.execute('CREATE TABLE IF NOT EXISTS todo_items (item TEXT, status TEXT)')
-    cursor.execute('INSERT INTO todo_items (item, status) VALUES (?, ?)', (item, 'pending'))
-    connect.commit()
-    connect.close()
+    if item == "":
+        print("Please provide a valid to-do item.")
+        return
+    if item in [row[0] for row in cursor.execute('SELECT item FROM todo_items')]:
+        print("This item already exists in your to-do list.")
+    else:
+        cursor.execute('INSERT INTO todo_items (item, status) VALUES (?, ?)', (item, 'pending'))
+        connect.commit()
+        connect.close()
     print(f"{show()} ")
 
-
 @app.command()
-def c(item : str):
+def c(task: list[str] = typer.Argument(...)):
+    item = " ".join(task)
     connect = sqlite3.connect('todo.db')
     cursor = connect.cursor()
     cursor.execute('UPDATE todo_items SET status = "completed" WHERE item = ?', (item,))
