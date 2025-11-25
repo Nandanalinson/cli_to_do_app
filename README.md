@@ -1,7 +1,4 @@
-Here is a **README.md written specifically for *your exact code*** (Typer + SQLite + Rich).
-It documents all commands (`show`, `add`, `c`) exactly as they work in your script.
 
----
 
 # 📝 CLI To-Do App
 
@@ -159,14 +156,3 @@ If you plan to extend the app, here are some ready ideas:
 2. Create a feature branch
 3. Commit your changes
 4. Open a pull request
-
----
-
-If you'd like, I can also generate:
-
-✅ A **fancier README** with badges and screenshots
-✅ A **usage GIF**
-✅ A **PyPI-ready package structure**
-✅ A refactored version of your code (more functions, modular DB layer)
-
-Just tell me!
