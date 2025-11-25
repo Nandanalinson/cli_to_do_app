@@ -1,59 +1,172 @@
-import typer
-import sqlite3
-from rich.table import Table
-from rich.console import Console
+Here is a **README.md written specifically for *your exact code*** (Typer + SQLite + Rich).
+It documents all commands (`show`, `add`, `c`) exactly as they work in your script.
 
-app = typer.Typer()
+---
 
+# 📝 CLI To-Do App
 
-@app.command()
-def show():
-    connect = sqlite3.connect('todo.db')
-    cursor = connect.cursor()
-    cursor.execute('CREATE TABLE IF NOT EXISTS todo_items (item TEXT, status TEXT)')
-    cursor.execute('SELECT item, status FROM todo_items')
-    rows = cursor.fetchall()
-    connect.close()
+A simple, colorful command-line To-Do application built with **Typer**, **Rich**, and **SQLite**.
+Add tasks, list them in a formatted table, and mark them as completed — all from the terminal.
 
-    table = Table(title="To-Do List")
-    table.add_column("Item", style="cyan", no_wrap=True)
-    table.add_column("Status", style="magenta")
-    for item, status in rows:
-        table.add_row(item, status)
-    console = Console()
-    console.print(table)
-    return ""
-    
-@app.command()
-def add(task: list[str] = typer.Argument(...)):
-    item = " ".join(task)
-    connect = sqlite3.connect('todo.db')
-    cursor = connect.cursor()
-    cursor.execute('CREATE TABLE IF NOT EXISTS todo_items (item TEXT, status TEXT)')
-    if item == "":
-        print("Please provide a valid to-do item.")
-        return
-    if item in [row[0] for row in cursor.execute('SELECT item FROM todo_items')]:
-        print("This item already exists in your to-do list.")
-    else:
-        cursor.execute('INSERT INTO todo_items (item, status) VALUES (?, ?)', (item, 'pending'))
-        connect.commit()
-        connect.close()
-    print(f"{show()} ")
+---
 
-@app.command()
-def c(task: list[str] = typer.Argument(...)):
-    item = " ".join(task)
-    connect = sqlite3.connect('todo.db')
-    cursor = connect.cursor()
-    cursor.execute('UPDATE todo_items SET status = "completed" WHERE item = ?', (item,))
-    connect.commit()
-    connect.close()
-    print(f"{show()} ")
-   
+## 🚀 Features
 
+* 📋 Display all tasks in a Rich-styled table
+* ➕ Add new tasks
+* ✅ Mark tasks as completed
+* 💾 Persistent local storage using SQLite (`todo.db`)
+* 🐍 Built with clean, modern Python CLI tools (Typer + Rich)
 
-if __name__ == "__main__":
-    app()
+---
 
+## 📦 Requirements
 
+* Python 3.10+
+* Typer
+* Rich
+
+Install dependencies:
+
+```bash
+pip install typer rich
+```
+
+SQLite is included with Python, so no extra installation is needed.
+
+---
+
+## 📂 Project Structure
+
+```
+.
+├── main.py         # CLI app
+├── todo.db         # (Auto-created) SQLite DB
+└── README.md
+```
+
+---
+
+## ▶️ Running the App
+
+Run the CLI using:
+
+```bash
+python main.py
+```
+
+Or install it as a command-line tool (optional):
+
+```bash
+pip install .
+```
+
+---
+
+## 🧑‍💻 Available Commands
+
+### 1. **Show all tasks**
+
+Displays your to-do list in a Rich-formatted table.
+
+```bash
+python main.py show
+```
+
+Example output:
+
+```
+┏━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┓
+┃ Item                 ┃ Status     ┃
+┡━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━┩
+│ Buy milk             │ pending    │
+│ Finish project       │ completed  │
+└──────────────────────┴────────────┘
+```
+
+---
+
+### 2. **Add a new task**
+
+```bash
+python main.py add "Your task here"
+```
+
+Examples:
+
+```bash
+python main.py add "Buy groceries"
+python main.py add Finish homework
+```
+
+* Prevents duplicate tasks
+* Automatically sets status to `pending`
+
+---
+
+### 3. **Mark a task as completed**
+
+Command name: `c`
+
+```bash
+python main.py c "task name"
+```
+
+Examples:
+
+```bash
+python main.py c "Buy groceries"
+python main.py c Finish homework
+```
+
+Marks the task's `status` column as `"completed"`.
+
+---
+
+## 🗃 How Data is Stored
+
+Tasks are stored in a simple SQLite database:
+
+```
+todo.db
+```
+
+With one table:
+
+```
+todo_items(item TEXT, status TEXT)
+```
+
+---
+
+## 🛠 Future Improvements
+
+If you plan to extend the app, here are some ready ideas:
+
+* Delete tasks
+* Edit tasks
+* Add priority levels
+* Add timestamps (created_at, completed_at)
+* Color-coded statuses
+* Export tasks to JSON or CSV
+* Support for task IDs instead of full text matching
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Open a pull request
+
+---
+
+If you'd like, I can also generate:
+
+✅ A **fancier README** with badges and screenshots
+✅ A **usage GIF**
+✅ A **PyPI-ready package structure**
+✅ A refactored version of your code (more functions, modular DB layer)
+
+Just tell me!
