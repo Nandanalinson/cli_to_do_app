@@ -40,7 +40,7 @@ def add(task: list[str] = typer.Argument(...)):
         connect.commit()
         connect.close()
     print(f"{show()} ")
-    print("cli_to_do")
+    
 
 @app.command()
 def c(task: list[str] = typer.Argument(...)):
