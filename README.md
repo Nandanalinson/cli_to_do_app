@@ -156,3 +156,16 @@ If you plan to extend the app, here are some ready ideas:
 2. Create a feature branch
 3. Commit your changes
 4. Open a pull request
+
+
+
+
+
+
+
+
+
+
+
+
+
